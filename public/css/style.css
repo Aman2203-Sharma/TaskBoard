@@ -1,0 +1,174 @@
+/* ============================================================
+   style.css – TaskBoard base styles (Step 1 skeleton)
+   ============================================================ */
+
+/* ── Reset & Custom Properties ──────────────────────────── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --clr-bg:       #f0f2f5;
+  --clr-surface:  #ffffff;
+  --clr-primary:  #4f46e5;
+  --clr-primary-hover: #4338ca;
+  --clr-border:   #e2e8f0;
+  --clr-text:     #1e293b;
+  --clr-muted:    #64748b;
+
+  --clr-todo:        #e0e7ff;
+  --clr-inprogress:  #fef3c7;
+  --clr-done:        #d1fae5;
+
+  --radius:   0.5rem;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.08);
+  --shadow-md: 0 4px 12px rgba(0,0,0,.12);
+
+  --nav-h: 56px;
+}
+
+html { font-size: 16px; }
+body {
+  font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+  background: var(--clr-bg);
+  color: var(--clr-text);
+  min-height: 100vh;
+}
+
+/* ── Navigation bar ─────────────────────────────────────── */
+.navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  height: var(--nav-h);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 1.5rem;
+  background: var(--clr-surface);
+  border-bottom: 1px solid var(--clr-border);
+  box-shadow: var(--shadow-sm);
+}
+
+.navbar__brand {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+}
+.navbar__logo  { font-size: 1.5rem; color: var(--clr-primary); }
+.navbar__title { font-size: 1.15rem; font-weight: 700; letter-spacing: -.3px; }
+
+.navbar__status {
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  font-size: .8rem;
+  color: var(--clr-muted);
+}
+
+/* ── Health status dot ──────────────────────────────────── */
+.status-dot {
+  width: 9px;
+  height: 9px;
+  border-radius: 50%;
+  display: inline-block;
+}
+.status-dot--checking { background: #94a3b8; animation: pulse 1.2s infinite; }
+.status-dot--ok       { background: #22c55e; }
+.status-dot--error    { background: #ef4444; }
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50%       { opacity: .35; }
+}
+
+/* ── Board layout ───────────────────────────────────────── */
+.board {
+  display: flex;
+  gap: 1.25rem;
+  padding: 1.5rem;
+  overflow-x: auto;
+  min-height: calc(100vh - var(--nav-h));
+  align-items: flex-start;
+}
+
+.board__loading {
+  color: var(--clr-muted);
+  font-size: .95rem;
+  margin: auto;
+}
+
+/* ── Column ─────────────────────────────────────────────── */
+.column {
+  flex: 0 0 300px;
+  background: var(--clr-surface);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  flex-direction: column;
+}
+
+.column__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: .75rem 1rem;
+  border-bottom: 1px solid var(--clr-border);
+  border-radius: var(--radius) var(--radius) 0 0;
+}
+.column--todo        .column__header { background: var(--clr-todo); }
+.column--inprogress  .column__header { background: var(--clr-inprogress); }
+.column--done        .column__header { background: var(--clr-done); }
+
+.column__name  { font-weight: 600; font-size: .9rem; }
+.column__count {
+  background: rgba(0,0,0,.08);
+  border-radius: 999px;
+  padding: .1rem .5rem;
+  font-size: .75rem;
+  font-weight: 600;
+}
+
+.column__cards {
+  flex: 1;
+  padding: .75rem;
+  display: flex;
+  flex-direction: column;
+  gap: .6rem;
+  min-height: 80px;
+}
+
+/* ── Task card ──────────────────────────────────────────── */
+.card {
+  background: var(--clr-surface);
+  border: 1px solid var(--clr-border);
+  border-radius: var(--radius);
+  padding: .75rem;
+  box-shadow: var(--shadow-sm);
+  cursor: grab;
+  transition: box-shadow .15s ease, transform .15s ease;
+}
+.card:hover {
+  box-shadow: var(--shadow-md);
+  transform: translateY(-1px);
+}
+
+.card__title      { font-size: .88rem; font-weight: 600; margin-bottom: .35rem; }
+.card__desc       { font-size: .78rem; color: var(--clr-muted); margin-bottom: .5rem; line-height: 1.4; }
+.card__meta       { display: flex; align-items: center; justify-content: space-between; }
+
+.badge {
+  display: inline-block;
+  font-size: .68rem;
+  font-weight: 700;
+  padding: .15rem .45rem;
+  border-radius: 999px;
+  text-transform: uppercase;
+  letter-spacing: .4px;
+}
+.badge--High   { background: #fee2e2; color: #b91c1c; }
+.badge--Medium { background: #fef3c7; color: #92400e; }
+.badge--Low    { background: #d1fae5; color: #065f46; }
+
+.card__due {
+  font-size: .72rem;
+  color: var(--clr-muted);
+}

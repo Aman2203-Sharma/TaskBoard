@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Board – TaskBoard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/dashboard.css" />
+</head>
+<body>
+  <header class="navbar">
+    <div class="navbar__brand">
+      <a href="/dashboard.html" class="navbar__back" title="Back to boards">&#8592;</a>
+      <span class="navbar__logo">&#9638;</span>
+      <span class="navbar__title" id="boardTitle">Board</span>
+    </div>
+    <div class="navbar__right">
+      <span class="navbar__user" id="navUser"></span>
+      <button class="btn btn--ghost btn--sm" data-action="logout">Sign out</button>
+    </div>
+  </header>
+
+  <main class="board" id="board">
+    <p class="board__loading">Loading board…</p>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    if (!Auth.isLoggedIn()) window.location.replace('/login.html');
+    const user = Auth.getUser();
+    if (user) document.getElementById('navUser').textContent = user.name;
+    document.querySelectorAll('[data-action="logout"]').forEach(b =>
+      b.addEventListener('click', e => { e.preventDefault(); Auth.logout(); })
+    );
+    // Board rendering will be implemented in Step 4 (Task Management)
+    document.getElementById('boardTitle').textContent =
+      new URLSearchParams(location.search).get('id')
+        ? 'Board #' + new URLSearchParams(location.search).get('id')
+        : 'Board';
+  </script>
+</body>
+</html>

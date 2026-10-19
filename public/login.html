@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Sign In – TaskBoard</title>
+  <link rel="stylesheet" href="/css/style.css" />
+  <link rel="stylesheet" href="/css/auth.css" />
+</head>
+<body class="auth-page">
+
+  <div class="auth-card">
+    <!-- Brand -->
+    <div class="auth-brand">
+      <span class="auth-brand__logo">&#9638;</span>
+      <span class="auth-brand__name">TaskBoard</span>
+    </div>
+
+    <h1 class="auth-title">Welcome back</h1>
+    <p class="auth-subtitle">Sign in to your workspace</p>
+
+    <!-- Success banner (shown after registration redirect) -->
+    <div id="loginSuccess" class="auth-success" hidden aria-live="polite"></div>
+
+    <!-- Error banner -->
+    <div id="loginError" class="auth-error" hidden></div>
+
+    <form id="loginForm" class="auth-form" novalidate>
+      <div class="form-group">
+        <label for="email" class="form-label">Email address</label>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          class="form-input"
+          placeholder="you@example.com"
+          autocomplete="email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">
+          Password
+          <a href="#" class="form-label__link" tabindex="-1">Forgot password?</a>
+        </label>
+        <div class="input-wrapper">
+          <input
+            id="password"
+            name="password"
+            type="password"
+            class="form-input"
+            placeholder="••••••••"
+            autocomplete="current-password"
+            required
+          />
+          <button type="button" class="toggle-pw" aria-label="Toggle password visibility">
+            👁
+          </button>
+        </div>
+      </div>
+
+      <button type="submit" class="btn btn--primary btn--full">Sign in</button>
+    </form>
+
+    <p class="auth-footer">
+      Don't have an account?
+      <a href="/register.html" class="auth-footer__link">Create one</a>
+    </p>
+  </div>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // Password visibility toggle
+    document.querySelector('.toggle-pw')?.addEventListener('click', () => {
+      const pw = document.getElementById('password');
+      pw.type = pw.type === 'password' ? 'text' : 'password';
+    });
+  </script>
+</body>
+</html>

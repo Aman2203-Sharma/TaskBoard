@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TaskBoard – Kanban</title>
+  <link rel="stylesheet" href="/css/style.css" />
+</head>
+<body>
+  <!-- ── Top navigation bar ── -->
+  <header class="navbar">
+    <div class="navbar__brand">
+      <span class="navbar__logo">&#9638;</span>
+      <span class="navbar__title">TaskBoard</span>
+    </div>
+    <div class="navbar__status" id="healthStatus">
+      <span class="status-dot status-dot--checking"></span>
+      <span id="healthLabel">Checking…</span>
+    </div>
+  </header>
+
+  <!-- ── Main Kanban area (populated by JS) ── -->
+  <main class="board" id="board">
+    <p class="board__loading">Loading board…</p>
+  </main>
+
+  <script src="/js/auth.js"></script>
+  <script>
+    // Auth guard — must run before main.js renders anything
+    if (!localStorage.getItem('taskboard_token')) {
+      window.location.replace('/login.html');
+    }
+  </script>
+  <script src="/js/main.js"></script>
+</body>
+</html>
