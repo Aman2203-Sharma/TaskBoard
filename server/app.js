@@ -23,7 +23,8 @@ const express = require('express');
 const { db, execSqlFile, get } = require('./db');
 const authRoutes                          = require('./routes/auth');
 const boardRoutes                         = require('./routes/boards');
-const { boardColumnRouter, columnRouter } = require('./routes/columns');
+const { columnRouter } = require('./routes/columns');
+const taskRoutes       = require('./routes/tasks');
 
 const app  = express();
 const PORT = process.env.PORT || 3000;
@@ -63,10 +64,10 @@ app.use(express.urlencoded({ extended: false }));          // parse form data
 app.use(express.static(path.resolve(__dirname, '..', 'public'))); // serve frontend
 
 // ── 3. API routes ────────────────────────────────────────────
-app.use('/api/auth',                authRoutes);
-app.use('/api/boards',              boardRoutes);
-app.use('/api/boards',              boardColumnRouter); // POST /api/boards/:id/columns
-app.use('/api/columns',             columnRouter);      // PUT|DELETE /api/columns/:id
+app.use('/api/auth',    authRoutes);
+app.use('/api/boards',  boardRoutes);  // includes nested /:id/columns
+app.use('/api/columns', columnRouter); // PUT|DELETE /api/columns/:id
+app.use('/api',         taskRoutes);   // tasks + comments (handles /api/columns/:id/tasks, /api/tasks/:id, /api/comments/:id)
 
 /**
  * GET /api/health

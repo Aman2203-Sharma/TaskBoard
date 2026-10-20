@@ -23,6 +23,7 @@ const express = require('express');
 const { get, run, all, transaction } = require('../db');
 const { authenticateToken } = require('../middleware/auth');
 const { checkBoardAccess }  = require('../middleware/boardAuth');
+const { boardColumnRouter } = require('./columns'); // nested column creation
 
 const router = express.Router();
 
@@ -304,5 +305,47 @@ router.delete('/:id/members/:userId', authenticateToken, checkBoardAccess('owner
   run('DELETE FROM board_members WHERE board_id = ? AND user_id = ?', [boardId, targetUserId]);
   return res.json({ message: 'Member removed successfully.' });
 });
+
+// ─────────────────────────────────────────────────────────────
+// GET /api/boards/:id/activity
+// ─────────────────────────────────────────────────────────────
+/**
+ * Returns the latest 30 activity log entries for the board.
+ * Requires board member access.
+ *
+ * 200 { activities: [...] }
+ */
+router.get('/:id/activity', authenticateToken, checkBoardAccess('member'), (req, res) => {
+  const boardId = Number(req.params.id);
+
+  const activities = all(
+    `SELECT
+       al.id,
+       al.action,
+       al.details,
+       al.created_at,
+       u.id    AS user_id,
+       u.name  AS user_name,
+       u.email AS user_email
+     FROM activity_log al
+     LEFT JOIN users u ON u.id = al.user_id
+     WHERE al.board_id = ?
+     ORDER BY al.created_at DESC
+     LIMIT 30`,
+    [boardId]
+  );
+
+  // Parse details JSON for each entry
+  const parsed = activities.map(a => ({
+    ...a,
+    details: a.details ? (() => { try { return JSON.parse(a.details); } catch { return {}; } })() : {},
+  }));
+
+  return res.json({ activities: parsed });
+});
+
+// ── Nested column creation: POST /api/boards/:id/columns ─────
+// Mount with mergeParams so /:id flows through from the parent router.
+router.use('/:id/columns', boardColumnRouter);
 
 module.exports = router;

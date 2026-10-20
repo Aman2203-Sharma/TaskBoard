@@ -109,3 +109,20 @@ CREATE TABLE IF NOT EXISTS comments (
   content    TEXT     NOT NULL,
   created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
+
+-- ----------------------------------------------------
+-- 7. activity_log
+--    Board-scoped audit trail. Entries survive user
+--    deletion (user_id SET NULL). Removed when the
+--    parent board is deleted (CASCADE).
+-- ----------------------------------------------------
+CREATE TABLE IF NOT EXISTS activity_log (
+  id         INTEGER  PRIMARY KEY AUTOINCREMENT,
+  board_id   INTEGER  NOT NULL
+               REFERENCES boards(id) ON DELETE CASCADE,
+  user_id    INTEGER
+               REFERENCES users(id) ON DELETE SET NULL,
+  action     TEXT     NOT NULL,
+  details    TEXT,                    -- JSON string for arbitrary metadata
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);

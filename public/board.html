@@ -6,37 +6,132 @@
   <title>Board – TaskBoard</title>
   <link rel="stylesheet" href="/css/style.css" />
   <link rel="stylesheet" href="/css/dashboard.css" />
+  <link rel="stylesheet" href="/css/board.css" />
+  <link rel="stylesheet" href="/css/board-dnd.css" />
 </head>
 <body>
-  <header class="navbar">
-    <div class="navbar__brand">
-      <a href="/dashboard.html" class="navbar__back" title="Back to boards">&#8592;</a>
-      <span class="navbar__logo">&#9638;</span>
-      <span class="navbar__title" id="boardTitle">Board</span>
+
+<!-- ── Board View ── -->
+<div class="board-view">
+
+  <!-- Top bar -->
+  <div class="board-topbar">
+    <a href="/dashboard.html" class="board-topbar__back" title="Back to boards">&#8592;</a>
+    <span class="board-topbar__title" id="boardTitle">Loading…</span>
+
+    <!-- Filter bar -->
+    <div class="filter-bar">
+      <input  class="filter-input" id="filterKeyword"  type="search" placeholder="Search tasks…" aria-label="Search tasks" />
+      <select class="filter-input filter-select" id="filterPriority" aria-label="Filter by priority">
+        <option value="">All priorities</option>
+        <option value="High">High</option>
+        <option value="Medium">Medium</option>
+        <option value="Low">Low</option>
+      </select>
+      <select class="filter-input filter-select" id="filterAssignee" aria-label="Filter by assignee">
+        <option value="">All assignees</option>
+      </select>
     </div>
+
     <div class="navbar__right">
       <span class="navbar__user" id="navUser"></span>
+      <button class="btn btn--ghost btn--sm" id="activityBtn">&#128337; Activity</button>
       <button class="btn btn--ghost btn--sm" data-action="logout">Sign out</button>
     </div>
-  </header>
+  </div>
 
-  <main class="board" id="board">
-    <p class="board__loading">Loading board…</p>
-  </main>
+  <!-- Kanban columns scroll area -->
+  <div class="kanban-scroll" id="kanbanScroll">
+    <div class="text-muted" id="boardLoading">Loading board…</div>
+  </div>
+</div>
 
-  <script src="/js/auth.js"></script>
-  <script>
-    if (!Auth.isLoggedIn()) window.location.replace('/login.html');
-    const user = Auth.getUser();
-    if (user) document.getElementById('navUser').textContent = user.name;
-    document.querySelectorAll('[data-action="logout"]').forEach(b =>
-      b.addEventListener('click', e => { e.preventDefault(); Auth.logout(); })
-    );
-    // Board rendering will be implemented in Step 4 (Task Management)
-    document.getElementById('boardTitle').textContent =
-      new URLSearchParams(location.search).get('id')
-        ? 'Board #' + new URLSearchParams(location.search).get('id')
-        : 'Board';
-  </script>
+<!-- ── Task Detail Modal ── -->
+<div class="modal-backdrop" id="taskModalBackdrop" hidden>
+  <div class="task-modal" role="dialog" aria-modal="true" aria-labelledby="modalTaskTitle">
+
+    <div class="task-modal__header">
+      <div class="task-modal__title-wrap">
+        <textarea class="task-modal__title" id="modalTaskTitle" rows="1"
+                  placeholder="Task title" aria-label="Task title"></textarea>
+      </div>
+      <button class="task-modal__close" id="closeTaskModal" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="task-modal__body">
+      <!-- Main: description + comments -->
+      <div class="task-modal__main">
+        <div>
+          <div class="field-label">Description</div>
+          <textarea class="task-desc" id="modalTaskDesc" placeholder="Add a description…" rows="4"></textarea>
+        </div>
+
+        <div>
+          <div class="field-label">Comments</div>
+          <div class="comments-section" id="commentsSection"></div>
+          <form class="comment-form" id="commentForm" style="margin-top:.5rem">
+            <input class="comment-input" id="commentInput" type="text" placeholder="Write a comment…" />
+            <button type="submit" class="btn btn--primary btn--sm">Post</button>
+          </form>
+        </div>
+      </div>
+
+      <!-- Sidebar: metadata -->
+      <div class="task-modal__sidebar">
+        <div class="sidebar-field">
+          <div class="field-label">Priority</div>
+          <select id="modalPriority" aria-label="Priority">
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <div class="field-label">Due date</div>
+          <input type="date" id="modalDueDate" aria-label="Due date" />
+        </div>
+        <div class="sidebar-field">
+          <div class="field-label">Assignee</div>
+          <select id="modalAssignee" aria-label="Assignee">
+            <option value="">Unassigned</option>
+          </select>
+        </div>
+        <div class="sidebar-field">
+          <div class="field-label">Column</div>
+          <select id="modalColumn" aria-label="Move to column"></select>
+        </div>
+        <div class="sidebar-field">
+          <div class="field-label">Created by</div>
+          <div class="text-muted" id="modalCreatedBy">—</div>
+        </div>
+        <div class="sidebar-field">
+          <div class="field-label">Created</div>
+          <div class="text-muted" id="modalCreatedAt">—</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="task-modal__actions">
+      <button class="btn btn--danger btn--sm" id="deleteTaskBtn">Delete task</button>
+      <button class="btn btn--ghost btn--sm" id="cancelTaskBtn">Cancel</button>
+      <button class="btn btn--save btn--sm" id="saveTaskBtn">Save changes</button>
+    </div>
+  </div>
+</div>
+
+<script src="/js/auth.js"></script>
+<script src="/js/board.js"></script>
+
+<!-- ── Activity Drawer ── -->
+<div class="drawer-overlay" id="drawerOverlay" hidden></div>
+<aside class="activity-drawer" id="activityDrawer" aria-label="Board activity">
+  <div class="activity-drawer__header">
+    <h2 class="activity-drawer__title">Activity</h2>
+    <button class="activity-drawer__close" id="closeDrawerBtn" aria-label="Close activity drawer">&times;</button>
+  </div>
+  <div class="activity-list" id="activityList">
+    <div class="text-muted" style="padding:.5rem">Click Activity to load.</div>
+  </div>
+</aside>
 </body>
 </html>
