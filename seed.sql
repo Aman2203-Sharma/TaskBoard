@@ -8,36 +8,82 @@
 -- ----------------------------------------------------
 -- Users
 -- ----------------------------------------------------
-INSERT INTO users (name, email, password_hash) VALUES
+-- Users (security answers pre-seeded to "demo")
+-- ----------------------------------------------------
+INSERT INTO users (id, name, email, password_hash, sec_q1_hash, sec_q2_hash, sec_q3_hash) VALUES
   (
+    1,
     'Alice Johnson',
     'alice@taskboard.dev',
-    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.'
+    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi'
   ),
   (
+    2,
     'Bob Smith',
     'bob@taskboard.dev',
-    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.'
+    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi'
+  ),
+  (
+    7,
+    'AMAN SHARMA',
+    'amansharma888930@gmail.com',
+    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi'
+  ),
+  (
+    42,
+    'Charlie Brown',
+    'charlie@taskboard.dev',
+    '$2b$10$xrxlcyT1bwDEfW3VG5s7ZOKBA2Vnk92s646OMGCJ8jw6x1kvv.O1.',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi',
+    '$2b$10$J/skO5RQD.qnh1voaQDGe.FwC593phVjCGTBBUhZB654iyKuprgUi'
   );
+
+-- ----------------------------------------------------
+-- Workspaces
+-- ----------------------------------------------------
+INSERT INTO workspaces (id, name, slug, owner_id) VALUES
+  (1, 'Acme Corp', 'acme-corp', 1);
+
+INSERT INTO workspace_members (workspace_id, user_id, role) VALUES
+  (1, 1, 'owner'),
+  (1, 2, 'member'),
+  (1, 7, 'member'),
+  (1, 42, 'member');
 
 -- ----------------------------------------------------
 -- Board (owned by Alice – user id 1)
 -- ----------------------------------------------------
-INSERT INTO boards (name, description, owner_id) VALUES
+INSERT INTO boards (id, name, description, owner_id, workspace_id) VALUES
   (
+    1,
     'Product Launch Q4',
     'All tasks related to the Q4 product release cycle.',
+    1,
     1
   );
 
 -- ----------------------------------------------------
 -- Board Members
---   Alice  → owner
---   Bob    → member
+--   Alice   → owner
+--   Bob     → member
+--   Aman    → member
+--   Charlie → member
 -- ----------------------------------------------------
 INSERT INTO board_members (board_id, user_id, role) VALUES
   (1, 1, 'owner'),
-  (1, 2, 'member');
+  (1, 2, 'member'),
+  (1, 7, 'member'),
+  (1, 42, 'member');
 
 -- ----------------------------------------------------
 -- Columns  (board_id = 1)
